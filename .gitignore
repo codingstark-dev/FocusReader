@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Swift Package Manager
+**/.build/
+**/.swiftpm/
+
+# Generated app bundle
+FocusReaderApp/FocusReader.app/
+
+# Xcode / IDE noise
+xcuserdata/
+*.xcuserstate
+DerivedData/
