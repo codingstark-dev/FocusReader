@@ -231,6 +231,29 @@ final class AttachedToolbar: NSObject {
 
     // MARK: - Focus Read Action
     func startFocusRead() {
+        // Case 1: RSVP panel is already visible and has content → just toggle play/pause.
+        if rsvpPanel?.isPanelVisible == true && engine.hasContent {
+            engine.togglePlayPause()
+            return
+        }
+
+        // Case 2: RSVP panel exists but is hidden, and engine still has content loaded →
+        // re-show the panel and resume playback without re-scraping or reloading.
+        if rsvpPanel != nil && engine.hasContent {
+            if engine.zenMode {
+                engine.zenMode = false
+            }
+            if let booksWin = BooksWindowTracker.readingWindow() {
+                let frame = BooksWindowTracker.appKitFrame(from: booksWin.frame)
+                rsvpPanel?.show(over: frame)
+            } else {
+                rsvpPanel?.show(over: nil)
+            }
+            engine.play()
+            return
+        }
+
+        // Case 3: No content loaded yet → scrape/load from scratch.
         engine.pause()
 
         var willLoadAsync = false
@@ -579,6 +602,7 @@ final class RSVPOverlayPanel: NSObject, NSWindowDelegate {
         p.backgroundColor = .clear
         p.hasShadow      = true
         p.level          = .floating
+        p.hidesOnDeactivate = false
         p.isReleasedWhenClosed = false
         p.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         p.isMovable = true

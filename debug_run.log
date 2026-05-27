@@ -1,0 +1,117 @@
+🔍 FocusReader: loadAllBooks starting. savedFolder: Optional("/Users/himanshum/Documents/books"), customPaths: ["/Users/himanshum/Documents/books/The Optimist (Keach Hagey) (z-library.sk, 1lib.sk, z-lib.sk).epub", "/Users/himanshum/Documents/books/The Infinity Machine Demis Hassabis, DeepMind, and the Quest for Superintelligence (Sebastian Mallaby) (z-library.sk, 1lib.sk, z-lib.sk).epub", "/Users/himanshum/Documents/books/Dopamine Detox  A Short Guide to Remove Distractions and Get Your Brain to Do Hard Things (Thibaut Meurisse) (z-library.sk, 1lib.sk, z-lib.sk).epub", "/Users/himanshum/Documents/books/llm-engineers-handbook-engineering-production.epub", "/Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub", "/Users/himanshum/Documents/books/The Let Them Theory A Life-Changing Tool That Millions of People Can’t Stop Talking About (Mel Robbins, Sawyer Robbins) (z-library.sk, 1lib.sk, z-lib.sk).epub"]
+📁 FocusReader: Found 6 EPUB files in library folder: /Users/himanshum/Documents/books
+📖 FocusReader: Checking folder file: /Users/himanshum/Documents/books/The Infinity Machine Demis Hassabis, DeepMind, and the Quest for Superintelligence (Sebastian Mallaby) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Infinity Machine Demis Hassabis, DeepMind, and the Quest for Superintelligence (Sebastian Mallaby) (z-library.sk, 1lib.sk, z-lib.sk)_0725fc39ada2104d8306636d6d91e44ca6f4dbb9c61cc74c3ea557e4a27414cd
+📖 FocusReader: Parsing chapters at resolved path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Infinity Machine Demis Hassabis, DeepMind, and the Quest for Superintelligence (Sebastian Mallaby) (z-library.sk, 1lib.sk, z-lib.sk)_0725fc39ada2104d8306636d6d91e44ca6f4dbb9c61cc74c3ea557e4a27414cd
+📂 FocusReader: Found OEBPS path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Infinity Machine Demis Hassabis, DeepMind, and the Quest for Superintelligence (Sebastian Mallaby) (z-library.sk, 1lib.sk, z-lib.sk)_0725fc39ada2104d8306636d6d91e44ca6f4dbb9c61cc74c3ea557e4a27414cd/OEBPS
+📄 FocusReader: Found OPF path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Infinity Machine Demis Hassabis, DeepMind, and the Quest for Superintelligence (Sebastian Mallaby) (z-library.sk, 1lib.sk, z-lib.sk)_0725fc39ada2104d8306636d6d91e44ca6f4dbb9c61cc74c3ea557e4a27414cd/OEBPS/9780593831854.opf
+🔗 FocusReader: Found 34 spine items
+📚 FocusReader: Successfully parsed 32 chapters from /Users/himanshum/Documents/books/The Infinity Machine Demis Hassabis, DeepMind, and the Quest for Superintelligence (Sebastian Mallaby) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Infinity Machine Demis Hassabis, DeepMind, and the Quest for Superintelligence (Sebastian Mallaby) (z-library.sk, 1lib.sk, z-lib.sk)_0725fc39ada2104d8306636d6d91e44ca6f4dbb9c61cc74c3ea557e4a27414cd
+✅ FocusReader: Adding folder book to library: The Infinity Machine by Sebastian Mallaby;
+📖 FocusReader: Checking folder file: /Users/himanshum/Documents/books/The Optimist (Keach Hagey) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Optimist (Keach Hagey) (z-library.sk, 1lib.sk, z-lib.sk)_06b86244e002752469476406cded7f7e8936af4822485d23e0c8dc5f51418f9c
+📖 FocusReader: Parsing chapters at resolved path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Optimist (Keach Hagey) (z-library.sk, 1lib.sk, z-lib.sk)_06b86244e002752469476406cded7f7e8936af4822485d23e0c8dc5f51418f9c
+📂 FocusReader: Found OEBPS path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Optimist (Keach Hagey) (z-library.sk, 1lib.sk, z-lib.sk)_06b86244e002752469476406cded7f7e8936af4822485d23e0c8dc5f51418f9c/OEBPS
+📄 FocusReader: Found OPF path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Optimist (Keach Hagey) (z-library.sk, 1lib.sk, z-lib.sk)_06b86244e002752469476406cded7f7e8936af4822485d23e0c8dc5f51418f9c/OEBPS/content.opf
+🔗 FocusReader: Found 32 spine items
+📚 FocusReader: Successfully parsed 26 chapters from /Users/himanshum/Documents/books/The Optimist (Keach Hagey) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Optimist (Keach Hagey) (z-library.sk, 1lib.sk, z-lib.sk)_06b86244e002752469476406cded7f7e8936af4822485d23e0c8dc5f51418f9c
+✅ FocusReader: Adding folder book to library: The Optimist by Keach Hagey
+📖 FocusReader: Checking folder file: /Users/himanshum/Documents/books/Dopamine Detox  A Short Guide to Remove Distractions and Get Your Brain to Do Hard Things (Thibaut Meurisse) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dopamine Detox  A Short Guide to Remove Distractions and Get Your Brain to Do Hard Things (Thibaut Meurisse) (z-library.sk, 1lib.sk, z-lib.sk)_58f7ce7640c5932b254a6e9ad13d0836f4665ed83c54929ac6bdeaaa0506c482
+📖 FocusReader: Parsing chapters at resolved path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dopamine Detox  A Short Guide to Remove Distractions and Get Your Brain to Do Hard Things (Thibaut Meurisse) (z-library.sk, 1lib.sk, z-lib.sk)_58f7ce7640c5932b254a6e9ad13d0836f4665ed83c54929ac6bdeaaa0506c482
+📂 FocusReader: Found OEBPS path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dopamine Detox  A Short Guide to Remove Distractions and Get Your Brain to Do Hard Things (Thibaut Meurisse) (z-library.sk, 1lib.sk, z-lib.sk)_58f7ce7640c5932b254a6e9ad13d0836f4665ed83c54929ac6bdeaaa0506c482/OEBPS
+📄 FocusReader: Found OPF path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dopamine Detox  A Short Guide to Remove Distractions and Get Your Brain to Do Hard Things (Thibaut Meurisse) (z-library.sk, 1lib.sk, z-lib.sk)_58f7ce7640c5932b254a6e9ad13d0836f4665ed83c54929ac6bdeaaa0506c482/OEBPS/content.opf
+🔗 FocusReader: Found 17 spine items
+📚 FocusReader: Successfully parsed 17 chapters from /Users/himanshum/Documents/books/Dopamine Detox  A Short Guide to Remove Distractions and Get Your Brain to Do Hard Things (Thibaut Meurisse) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dopamine Detox  A Short Guide to Remove Distractions and Get Your Brain to Do Hard Things (Thibaut Meurisse) (z-library.sk, 1lib.sk, z-lib.sk)_58f7ce7640c5932b254a6e9ad13d0836f4665ed83c54929ac6bdeaaa0506c482
+✅ FocusReader: Adding folder book to library: Dopamine Detox: A Short Guide to Eliminate Distractions and Train Your Brain to Do Hard Things by meurisse, thibaut
+📖 FocusReader: Checking folder file: /Users/himanshum/Documents/books/The Let Them Theory A Life-Changing Tool That Millions of People Can’t Stop Talking About (Mel Robbins, Sawyer Robbins) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Let Them Theory A Life-Changing Tool That Millions of People Can’t Stop Talking About (Mel Robbins, Sawyer Robbins) (z-library.sk, 1lib.sk, z-lib.sk)_9b1c77082974ca16e9b7e4fd83d68bff5bbfa62ac773cfa7471c7abd2e0635b9
+📖 FocusReader: Parsing chapters at resolved path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Let Them Theory A Life-Changing Tool That Millions of People Can’t Stop Talking About (Mel Robbins, Sawyer Robbins) (z-library.sk, 1lib.sk, z-lib.sk)_9b1c77082974ca16e9b7e4fd83d68bff5bbfa62ac773cfa7471c7abd2e0635b9
+📂 FocusReader: Found OEBPS path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Let Them Theory A Life-Changing Tool That Millions of People Can’t Stop Talking About (Mel Robbins, Sawyer Robbins) (z-library.sk, 1lib.sk, z-lib.sk)_9b1c77082974ca16e9b7e4fd83d68bff5bbfa62ac773cfa7471c7abd2e0635b9/OEBPS
+📄 FocusReader: Found OPF path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Let Them Theory A Life-Changing Tool That Millions of People Can’t Stop Talking About (Mel Robbins, Sawyer Robbins) (z-library.sk, 1lib.sk, z-lib.sk)_9b1c77082974ca16e9b7e4fd83d68bff5bbfa62ac773cfa7471c7abd2e0635b9/OEBPS/content.opf
+🔗 FocusReader: Found 47 spine items
+📚 FocusReader: Successfully parsed 47 chapters from /Users/himanshum/Documents/books/The Let Them Theory A Life-Changing Tool That Millions of People Can’t Stop Talking About (Mel Robbins, Sawyer Robbins) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/The Let Them Theory A Life-Changing Tool That Millions of People Can’t Stop Talking About (Mel Robbins, Sawyer Robbins) (z-library.sk, 1lib.sk, z-lib.sk)_9b1c77082974ca16e9b7e4fd83d68bff5bbfa62ac773cfa7471c7abd2e0635b9
+✅ FocusReader: Adding folder book to library: The Let Them Theory by Mel Robbins
+📖 FocusReader: Checking folder file: /Users/himanshum/Documents/books/llm-engineers-handbook-engineering-production.epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/llm-engineers-handbook-engineering-production_95946d5241b61f931d548847851504a8555bf3964112e2600a8a1b8c868bd574
+📖 FocusReader: Parsing chapters at resolved path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/llm-engineers-handbook-engineering-production_95946d5241b61f931d548847851504a8555bf3964112e2600a8a1b8c868bd574
+📂 FocusReader: Found OEBPS path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/llm-engineers-handbook-engineering-production_95946d5241b61f931d548847851504a8555bf3964112e2600a8a1b8c868bd574/OEBPS
+📄 FocusReader: Found OPF path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/llm-engineers-handbook-engineering-production_95946d5241b61f931d548847851504a8555bf3964112e2600a8a1b8c868bd574/OEBPS/content.opf
+🔗 FocusReader: Found 17 spine items
+📚 FocusReader: Successfully parsed 16 chapters from /Users/himanshum/Documents/books/llm-engineers-handbook-engineering-production.epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/llm-engineers-handbook-engineering-production_95946d5241b61f931d548847851504a8555bf3964112e2600a8a1b8c868bd574
+✅ FocusReader: Adding folder book to library: LLM Engineer’s Handbook by Paul Iusztin
+ | Maxime Labonne
+📖 FocusReader: Checking folder file: /Users/himanshum/Documents/books/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk)_1f83122783609fffe5e5853e2b56048bef9613895f2133e56ddd687a0fbb47f4
+📖 FocusReader: Parsing chapters at resolved path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk)_1f83122783609fffe5e5853e2b56048bef9613895f2133e56ddd687a0fbb47f4
+📂 FocusReader: Found OEBPS path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk)_1f83122783609fffe5e5853e2b56048bef9613895f2133e56ddd687a0fbb47f4/OEBPS
+📄 FocusReader: Found OPF path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk)_1f83122783609fffe5e5853e2b56048bef9613895f2133e56ddd687a0fbb47f4/OEBPS/package.opf
+🔗 FocusReader: Found 115 spine items
+📚 FocusReader: Successfully parsed 112 chapters from /Users/himanshum/Documents/books/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk)_1f83122783609fffe5e5853e2b56048bef9613895f2133e56ddd687a0fbb47f4
+✅ FocusReader: Adding folder book to library: Dictionary of Fine Distinctions by Eli Burnstein
+📖 FocusReader: Checking custom imported path: /Users/himanshum/Documents/books/The Optimist (Keach Hagey) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: Custom book already in list: /Users/himanshum/Documents/books/The Optimist (Keach Hagey) (z-library.sk, 1lib.sk, z-lib.sk).epub
+📖 FocusReader: Checking custom imported path: /Users/himanshum/Documents/books/The Infinity Machine Demis Hassabis, DeepMind, and the Quest for Superintelligence (Sebastian Mallaby) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: Custom book already in list: /Users/himanshum/Documents/books/The Infinity Machine Demis Hassabis, DeepMind, and the Quest for Superintelligence (Sebastian Mallaby) (z-library.sk, 1lib.sk, z-lib.sk).epub
+📖 FocusReader: Checking custom imported path: /Users/himanshum/Documents/books/Dopamine Detox  A Short Guide to Remove Distractions and Get Your Brain to Do Hard Things (Thibaut Meurisse) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: Custom book already in list: /Users/himanshum/Documents/books/Dopamine Detox  A Short Guide to Remove Distractions and Get Your Brain to Do Hard Things (Thibaut Meurisse) (z-library.sk, 1lib.sk, z-lib.sk).epub
+📖 FocusReader: Checking custom imported path: /Users/himanshum/Documents/books/llm-engineers-handbook-engineering-production.epub
+ℹ️ FocusReader: Custom book already in list: /Users/himanshum/Documents/books/llm-engineers-handbook-engineering-production.epub
+📖 FocusReader: Checking custom imported path: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+ℹ️ FocusReader: EPUB path is already a directory: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+📖 FocusReader: Parsing chapters at resolved path: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+📂 FocusReader: Found OEBPS path: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub/OEBPS
+📄 FocusReader: Found OPF path: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub/OEBPS/content.opf
+🔗 FocusReader: Found 12 spine items
+📚 FocusReader: Successfully parsed 11 chapters from /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+ℹ️ FocusReader: EPUB path is already a directory: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+✅ FocusReader: Adding custom book to library: The Alchemist by Ben Jonson
+📖 FocusReader: Checking custom imported path: /Users/himanshum/Documents/books/The Let Them Theory A Life-Changing Tool That Millions of People Can’t Stop Talking About (Mel Robbins, Sawyer Robbins) (z-library.sk, 1lib.sk, z-lib.sk).epub
+ℹ️ FocusReader: Custom book already in list: /Users/himanshum/Documents/books/The Let Them Theory A Life-Changing Tool That Millions of People Can’t Stop Talking About (Mel Robbins, Sawyer Robbins) (z-library.sk, 1lib.sk, z-lib.sk).epub
+📚 FocusReader: loadAllBooks finished. Total library size: 7
+ℹ️ FocusReader: EPUB path is already a directory: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+ℹ️ FocusReader: EPUB path is already a directory: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+📖 FocusReader: Parsing chapters at resolved path: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+📂 FocusReader: Found OEBPS path: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub/OEBPS
+📄 FocusReader: Found OPF path: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub/OEBPS/content.opf
+🔗 FocusReader: Found 12 spine items
+📚 FocusReader: Successfully parsed 11 chapters from /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+ℹ️ FocusReader: EPUB path is already a directory: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+ℹ️ FocusReader: EPUB path is already a directory: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+ℹ️ FocusReader: EPUB path is already a directory: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+📖 FocusReader: Parsing chapters at resolved path: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+📂 FocusReader: Found OEBPS path: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub/OEBPS
+📄 FocusReader: Found OPF path: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub/OEBPS/content.opf
+🔗 FocusReader: Found 12 spine items
+📚 FocusReader: Successfully parsed 11 chapters from /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+ℹ️ FocusReader: EPUB path is already a directory: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk)_1f83122783609fffe5e5853e2b56048bef9613895f2133e56ddd687a0fbb47f4
+ℹ️ FocusReader: EPUB path is already a directory: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk)_1f83122783609fffe5e5853e2b56048bef9613895f2133e56ddd687a0fbb47f4
+📖 FocusReader: Parsing chapters at resolved path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk)_1f83122783609fffe5e5853e2b56048bef9613895f2133e56ddd687a0fbb47f4
+📂 FocusReader: Found OEBPS path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk)_1f83122783609fffe5e5853e2b56048bef9613895f2133e56ddd687a0fbb47f4/OEBPS
+📄 FocusReader: Found OPF path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk)_1f83122783609fffe5e5853e2b56048bef9613895f2133e56ddd687a0fbb47f4/OEBPS/package.opf
+🔗 FocusReader: Found 115 spine items
+📚 FocusReader: Successfully parsed 112 chapters from /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk)_1f83122783609fffe5e5853e2b56048bef9613895f2133e56ddd687a0fbb47f4
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/Dictionary of Fine Distinctions. Nuances, Niceties, and Subtle Shades of Meaning (Eli Burnstein) (z-library.sk, 1lib.sk, z-lib.sk)_1f83122783609fffe5e5853e2b56048bef9613895f2133e56ddd687a0fbb47f4
+ℹ️ FocusReader: EPUB path is already a directory: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+ℹ️ FocusReader: EPUB path is already a directory: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+📖 FocusReader: Parsing chapters at resolved path: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+📂 FocusReader: Found OEBPS path: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub/OEBPS
+📄 FocusReader: Found OPF path: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub/OEBPS/content.opf
+🔗 FocusReader: Found 12 spine items
+📚 FocusReader: Successfully parsed 11 chapters from /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+ℹ️ FocusReader: EPUB path is already a directory: /Users/himanshum/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/Books/955032227.epub
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/llm-engineers-handbook-engineering-production_95946d5241b61f931d548847851504a8555bf3964112e2600a8a1b8c868bd574
+ℹ️ FocusReader: EPUB path is already a directory: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/llm-engineers-handbook-engineering-production_95946d5241b61f931d548847851504a8555bf3964112e2600a8a1b8c868bd574
+📖 FocusReader: Parsing chapters at resolved path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/llm-engineers-handbook-engineering-production_95946d5241b61f931d548847851504a8555bf3964112e2600a8a1b8c868bd574
+📂 FocusReader: Found OEBPS path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/llm-engineers-handbook-engineering-production_95946d5241b61f931d548847851504a8555bf3964112e2600a8a1b8c868bd574/OEBPS
+📄 FocusReader: Found OPF path: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/llm-engineers-handbook-engineering-production_95946d5241b61f931d548847851504a8555bf3964112e2600a8a1b8c868bd574/OEBPS/content.opf
+🔗 FocusReader: Found 17 spine items
+📚 FocusReader: Successfully parsed 16 chapters from /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/llm-engineers-handbook-engineering-production_95946d5241b61f931d548847851504a8555bf3964112e2600a8a1b8c868bd574
+ℹ️ FocusReader: EPUB already unzipped at: /Users/himanshum/Library/Caches/com.focusreader.books/ExtractedEPUBs/llm-engineers-handbook-engineering-production_95946d5241b61f931d548847851504a8555bf3964112e2600a8a1b8c868bd574
