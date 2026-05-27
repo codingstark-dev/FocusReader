@@ -12,3 +12,8 @@ FocusReaderApp/FocusReader.app/
 xcuserdata/
 *.xcuserstate
 DerivedData/
+
+# Antigravity CLI and Debug Logs
+.antigravitycli/
+*.log
+debug_run*.log
