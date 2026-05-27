@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import Combine
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -10,6 +11,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var booksObserver: Any?
     private var globalMonitor: Any?
     private var localMonitor: Any?
+    private var updateCancellable: AnyCancellable?
+    private var updateMenuItem: NSMenuItem?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         buildMenuBar()
@@ -17,6 +20,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupKeyboardMonitors()
         // Auto-show toolbar if Books is already open with a book
         checkAndShowToolbar()
+
+        // Start update check in the background
+        UpdateChecker.shared.checkForUpdates()
+
+        // Observe update checker using Combine
+        updateCancellable = UpdateChecker.shared.$updateAvailable
+            .combineLatest(UpdateChecker.shared.$latestVersion)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] available, latest in
+                guard let self = self else { return }
+                if available, let latest = latest {
+                    self.updateMenuItem?.title = "✨ Update Available (v\(latest))"
+                    self.updateMenuItem?.isHidden = false
+                } else {
+                    self.updateMenuItem?.isHidden = true
+                }
+            }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -44,6 +64,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let title = NSMenuItem(title: "⚡ Focus Reader for Books", action: nil, keyEquivalent: "")
         title.isEnabled = false
         menu.addItem(title)
+
+        // Dynamic update menu item, hidden by default
+        let updateItem = NSMenuItem(title: "✨ Update Available", action: #selector(openUpdatePage), keyEquivalent: "")
+        updateItem.target = self
+        updateItem.isHidden = true
+        menu.addItem(updateItem)
+        self.updateMenuItem = updateItem
+
         menu.addItem(.separator())
 
         let showToolbar = NSMenuItem(title: "Show Toolbar on Books", action: #selector(showToolbarAction), keyEquivalent: "")
@@ -151,5 +179,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @MainActor @objc func reloadBook() {
         toolbar?.loadCurrentBook()
+    }
+
+    @MainActor @objc func openUpdatePage() {
+        UpdateChecker.shared.openDownloadPage()
     }
 }

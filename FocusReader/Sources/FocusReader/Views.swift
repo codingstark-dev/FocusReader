@@ -696,6 +696,7 @@ struct CustomToggleStyle: ToggleStyle {
 // MARK: - Settings Drawer Panel
 struct SettingsView: View {
     @ObservedObject var engine: RSVPEngine
+    @ObservedObject var updateChecker = UpdateChecker.shared
     let onDismiss: () -> Void
     
     var body: some View {
@@ -852,6 +853,78 @@ struct SettingsView: View {
                 .padding(.horizontal, 24)
                 .padding(.vertical, 20)
             }
+            
+            Divider().background(Color.white.opacity(0.08))
+            
+            // Version & Update Footer
+            HStack(spacing: 12) {
+                // Version label
+                HStack(spacing: 6) {
+                    Image(systemName: "app.badge.fill")
+                        .font(.system(size: 10))
+                        .foregroundColor(.white.opacity(0.3))
+                    Text("v\(updateChecker.currentVersion)")
+                        .font(.system(size: 10, weight: .bold, design: .monospaced))
+                        .foregroundColor(.white.opacity(0.45))
+                }
+                
+                Spacer()
+                
+                // Update available banner
+                if updateChecker.updateAvailable, let latest = updateChecker.latestVersion {
+                    Button(action: {
+                        updateChecker.openDownloadPage()
+                    }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "arrow.down.circle.fill")
+                                .font(.system(size: 11))
+                            Text("Update to v\(latest)")
+                                .font(.system(size: 10, weight: .bold))
+                        }
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 5)
+                        .background(
+                            Capsule()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [engine.selectedTheme.accentColor, engine.selectedTheme.accentColor.opacity(0.7)],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                        )
+                        .shadow(color: engine.selectedTheme.accentColor.opacity(0.3), radius: 4)
+                    }
+                    .buttonStyle(.plain)
+                    .help("Download the latest version from GitHub")
+                } else if updateChecker.isChecking {
+                    HStack(spacing: 6) {
+                        ProgressView()
+                            .scaleEffect(0.5)
+                            .frame(width: 12, height: 12)
+                        Text("Checking for updates...")
+                            .font(.system(size: 10))
+                            .foregroundColor(.white.opacity(0.35))
+                    }
+                } else {
+                    Button(action: {
+                        updateChecker.checkForUpdates()
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "arrow.clockwise")
+                                .font(.system(size: 9))
+                            Text("Check for Updates")
+                                .font(.system(size: 10, weight: .medium))
+                        }
+                        .foregroundColor(.white.opacity(0.4))
+                    }
+                    .buttonStyle(.plain)
+                    .help("Check GitHub for a newer version")
+                }
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 10)
         }
         .frame(width: 740, height: 400)
         .background(

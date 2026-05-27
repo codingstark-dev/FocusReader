@@ -69,9 +69,9 @@ cat > "$APP_DIR/Contents/Info.plist" << 'PLIST'
     <key>CFBundleDisplayName</key>
     <string>Focus Reader for Books</string>
     <key>CFBundleVersion</key>
-    <string>1.0.2</string>
+    <string>1.0.3</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.2</string>
+    <string>1.0.3</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleIconFile</key>
