@@ -1,5 +1,6 @@
 import Foundation
 import SQLite3
+import CryptoKit
 
 // MARK: - BooksLibrary
 /// Reads the BKLibrary SQLite database that Books maintains.
@@ -83,15 +84,29 @@ struct EPUBParser {
 
     /// Parses all chapters from an EPUB path.
     static func parseChapters(at epubPath: String) -> [Chapter] {
+        let resolvedPath = getExtractedPath(for: epubPath)
+        print("📖 FocusReader: Parsing chapters at resolved path: \(resolvedPath)")
+        
         // Determine OEBPS directory (standard EPUB layout)
-        let oebpsPath = findOEBPSPath(at: epubPath)
-        guard let oebpsPath else { return [] }
-
-        // Read the OPF spine to get reading order
-        guard let opfPath = findOPFPath(in: oebpsPath),
-              let spineHrefs = parseSpine(opfPath: opfPath, oebpsBase: oebpsPath) else {
+        let oebpsPath = findOEBPSPath(at: resolvedPath)
+        guard let oebpsPath else {
+            print("⚠️ FocusReader: findOEBPSPath returned nil for \(resolvedPath)")
             return []
         }
+        print("📂 FocusReader: Found OEBPS path: \(oebpsPath)")
+
+        // Read the OPF spine to get reading order
+        guard let opfPath = findOPFPath(in: oebpsPath) else {
+            print("⚠️ FocusReader: findOPFPath returned nil in \(oebpsPath)")
+            return []
+        }
+        print("📄 FocusReader: Found OPF path: \(opfPath)")
+        
+        guard let spineHrefs = parseSpine(opfPath: opfPath, oebpsBase: oebpsPath) else {
+            print("⚠️ FocusReader: parseSpine returned nil for OPF \(opfPath)")
+            return []
+        }
+        print("🔗 FocusReader: Found \(spineHrefs.count) spine items")
 
         var chapters: [Chapter] = []
         for href in spineHrefs {
@@ -103,18 +118,116 @@ struct EPUBParser {
                 chapters.append(Chapter(title: titleFromPath, text: text, wordCount: words))
             }
         }
+        print("📚 FocusReader: Successfully parsed \(chapters.count) chapters from \(epubPath)")
         return chapters
     }
 
     /// Returns flat word list from entire book, starting at readingProgress offset.
     static func wordsFrom(epubPath: String, progress: Double) -> (words: [String], startIndex: Int, title: String) {
-        let chapters = parseChapters(at: epubPath)
+        let resolvedPath = getExtractedPath(for: epubPath)
+        let chapters = parseChapters(at: resolvedPath)
         let allWords = chapters.flatMap { $0.text.components(separatedBy: .whitespacesAndNewlines) }
             .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
 
         let startIdx = max(0, Int(Double(allWords.count) * progress) - 5)
-        let bookTitle = URL(fileURLWithPath: epubPath).deletingPathExtension().lastPathComponent
-        return (allWords, startIdx, bookTitle)
+        let bookTitle = URL(fileURLWithPath: resolvedPath).deletingPathExtension().lastPathComponent
+        let metadata = parseMetadata(at: epubPath)
+        let title = metadata.title ?? bookTitle.replacingOccurrences(of: "_", with: " ").replacingOccurrences(of: "-", with: " ")
+        return (allWords, startIdx, title)
+    }
+
+    /// Parses metadata (title and author) from an EPUB.
+    static func parseMetadata(at epubPath: String) -> (title: String?, author: String?) {
+        let resolvedPath = getExtractedPath(for: epubPath)
+        guard let oebpsPath = findOEBPSPath(at: resolvedPath),
+              let opfPath = findOPFPath(in: oebpsPath) else {
+            return (nil, nil)
+        }
+        
+        guard let data = FileManager.default.contents(atPath: opfPath),
+              let xml = String(data: data, encoding: .utf8) else {
+            return (nil, nil)
+        }
+        
+        let titlePattern = #"<dc:title[^>]*>([^<]+)</dc:title>"#
+        let authorPattern = #"<dc:creator[^>]*>([^<]+)</dc:creator>"#
+        
+        func extract(pattern: String) -> String? {
+            guard let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive]),
+                  let match = regex.firstMatch(in: xml, range: NSRange(xml.startIndex..., in: xml)) else {
+                return nil
+            }
+            if let range = Range(match.range(at: 1), in: xml) {
+                return String(xml[range])
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .replacingOccurrences(of: "&amp;", with: "&")
+                    .replacingOccurrences(of: "&lt;", with: "<")
+                    .replacingOccurrences(of: "&gt;", with: ">")
+                    .replacingOccurrences(of: "&nbsp;", with: " ")
+                    .replacingOccurrences(of: "&quot;", with: "\"")
+                    .replacingOccurrences(of: "&apos;", with: "'")
+            }
+            return nil
+        }
+        
+        let title = extract(pattern: titlePattern)
+        let author = extract(pattern: authorPattern)
+        return (title, author)
+    }
+
+    private static func getExtractedPath(for epubPath: String) -> String {
+        let fm = FileManager.default
+        var isDir: ObjCBool = false
+        if fm.fileExists(atPath: epubPath, isDirectory: &isDir) {
+            if isDir.boolValue {
+                print("ℹ️ FocusReader: EPUB path is already a directory: \(epubPath)")
+                return epubPath
+            }
+        }
+        
+        // It's a file, unzip it to Caches directory
+        let fileURL = URL(fileURLWithPath: epubPath)
+        guard let cachesURL = fm.urls(for: .cachesDirectory, in: .userDomainMask).first else {
+            print("⚠️ FocusReader: Caches directory not found, using raw path")
+            return epubPath
+        }
+        let baseExtractionURL = cachesURL.appendingPathComponent("com.focusreader.books/ExtractedEPUBs")
+        
+        // Clean folder name from path hash to avoid collision (use stable SHA256 of path)
+        let pathData = Data(epubPath.utf8)
+        let hashed = SHA256.hash(data: pathData)
+        let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+        let folderName = "\(fileURL.deletingPathExtension().lastPathComponent)_\(hashString)"
+        let extractionURL = baseExtractionURL.appendingPathComponent(folderName)
+        let extractionPath = extractionURL.path
+        
+        // Check if already extracted
+        if fm.fileExists(atPath: extractionPath) {
+            print("ℹ️ FocusReader: EPUB already unzipped at: \(extractionPath)")
+            return extractionPath
+        }
+        
+        print("📦 FocusReader: Unzipping EPUB \(epubPath) to \(extractionPath)...")
+        // Create directory
+        try? fm.createDirectory(at: extractionURL, withIntermediateDirectories: true, attributes: nil)
+        
+        // Run unzip
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
+        process.arguments = ["-q", "-o", epubPath, "-d", extractionPath]
+        
+        do {
+            try process.run()
+            process.waitUntilExit()
+            print("📦 FocusReader: Unzip process finished with status \(process.terminationStatus)")
+            if process.terminationStatus == 0 {
+                return extractionPath
+            }
+        } catch {
+            print("❌ FocusReader: Failed to unzip EPUB at \(epubPath): \(error)")
+        }
+        
+        return epubPath // fallback
     }
 
     // MARK: - Private Helpers
@@ -153,21 +266,41 @@ struct EPUBParser {
         guard let data = FileManager.default.contents(atPath: opfPath),
               let xml = String(data: data, encoding: .utf8) else { return nil }
 
-        // Parse manifest: id → href
+        // Parse manifest: id → href (supporting any attribute order and quotes)
         var idToHref: [String: String] = [:]
-        let manifestPattern = #"<item[^>]+id="([^"]+)"[^>]+href="([^"]+)"[^>]*/>"#
-        let manifestRegex = try? NSRegularExpression(pattern: manifestPattern)
+        
+        let itemRegex = try? NSRegularExpression(pattern: #"<item\s+([^>]+)/?>"#, options: [.caseInsensitive])
+        let idRegex = try? NSRegularExpression(pattern: #"\bid\s*=\s*['"]([^'"]+)['"]"#, options: [.caseInsensitive])
+        let hrefRegex = try? NSRegularExpression(pattern: #"\bhref\s*=\s*['"]([^'"]+)['"]"#, options: [.caseInsensitive])
+        
         let nsXml = xml as NSString
-        manifestRegex?.enumerateMatches(in: xml, range: NSRange(xml.startIndex..., in: xml)) { m, _, _ in
-            guard let m, m.numberOfRanges >= 3 else { return }
-            let id   = nsXml.substring(with: m.range(at: 1))
-            let href = nsXml.substring(with: m.range(at: 2))
-            idToHref[id] = href
+        itemRegex?.enumerateMatches(in: xml, range: NSRange(xml.startIndex..., in: xml)) { match, _, _ in
+            guard let match = match else { return }
+            let itemContent = nsXml.substring(with: match.range(at: 1))
+            
+            let itemRange = NSRange(itemContent.startIndex..., in: itemContent)
+            
+            var matchedId: String? = nil
+            if let idMatch = idRegex?.firstMatch(in: itemContent, range: itemRange) {
+                if let r = Range(idMatch.range(at: 1), in: itemContent) {
+                    matchedId = String(itemContent[r])
+                }
+            }
+            
+            var matchedHref: String? = nil
+            if let hrefMatch = hrefRegex?.firstMatch(in: itemContent, range: itemRange) {
+                if let r = Range(hrefMatch.range(at: 1), in: itemContent) {
+                    matchedHref = String(itemContent[r])
+                }
+            }
+            
+            if let id = matchedId, let href = matchedHref {
+                idToHref[id] = href
+            }
         }
 
         // Parse spine: ordered list of idrefs
-        let spinePattern = #"<itemref[^>]+idref="([^"]+)""#
-        let spineRegex = try? NSRegularExpression(pattern: spinePattern)
+        let spineRegex = try? NSRegularExpression(pattern: #"\bidref\s*=\s*['"]([^'"]+)['"]"#, options: [.caseInsensitive])
         var hrefs: [String] = []
         spineRegex?.enumerateMatches(in: xml, range: NSRange(xml.startIndex..., in: xml)) { m, _, _ in
             guard let m, m.numberOfRanges >= 2 else { return }

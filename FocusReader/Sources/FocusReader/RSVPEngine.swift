@@ -141,25 +141,30 @@ final class RSVPEngine: ObservableObject {
     var hasContent:  Bool   { !words.isEmpty }
     var wordCount:   Int    { words.count }
     var etaMinutes:  Double { wpm > 0 ? Double(max(0, words.count - currentIndex)) / wpm : 0 }
+    var currentPage: Int {
+        guard !words.isEmpty else { return 1 }
+        return min(totalPages, (currentIndex / 300) + 1)
+    }
+    var totalPages: Int {
+        guard !words.isEmpty else { return 1 }
+        return max(1, Int(ceil(Double(words.count) / 300.0)))
+    }
 
     // Swift Concurrency timing loop task
     private var timingTask: Task<Void, Never>?
 
     init() {
-        // Automatically restore local library if folder is already saved
-        if let savedFolder = UserDefaults.standard.string(forKey: "com.focusreader.books.libraryFolder") {
-            scanFolder(at: savedFolder)
-        }
+        loadAllBooks()
     }
 
-    func load(words: [String], startAt: Int, title: String, author: String) {
+    func load(words: [String], startAt: Int, title: String, author: String, epubPath: String? = nil) {
         let cleaned = words.filter { !ORPCalculator.clean($0).isEmpty }
         self.words = cleaned
         self.currentIndex = max(0, min(startAt, cleaned.count - 1))
         self.bookTitle  = title
         self.bookAuthor = author
         self.isLibraryMode = false
-        self.selectedLocalBookPath = nil
+        self.selectedLocalBookPath = epubPath
         stop()
     }
 
@@ -300,6 +305,18 @@ final class RSVPEngine: ObservableObject {
 
     // ── Standalone Local Folder Library Scanning & Persistence ──
     
+    func scanPath(at path: String) {
+        let fm = FileManager.default
+        var isDir: ObjCBool = false
+        guard fm.fileExists(atPath: path, isDirectory: &isDir) else { return }
+        
+        if isDir.boolValue && !path.hasSuffix(".epub") {
+            scanFolder(at: path)
+        } else {
+            importSingleEPUB(at: path)
+        }
+    }
+
     func scanFolder(at path: String) {
         let fm = FileManager.default
         var isDir: ObjCBool = false
@@ -307,35 +324,118 @@ final class RSVPEngine: ObservableObject {
         
         // Persist folder URL
         UserDefaults.standard.set(path, forKey: "com.focusreader.books.libraryFolder")
+        loadAllBooks()
+    }
+    
+    func importSingleEPUB(at path: String) {
+        var customPaths = UserDefaults.standard.stringArray(forKey: "com.focusreader.books.customEPUBs") ?? []
+        if !customPaths.contains(path) {
+            customPaths.append(path)
+            UserDefaults.standard.set(customPaths, forKey: "com.focusreader.books.customEPUBs")
+        }
         
+        // Mark as recently read to float to the top
+        let dateKey = "com.focusreader.books.lastReadDate:\(path)"
+        UserDefaults.standard.set(Date().timeIntervalSinceReferenceDate, forKey: dateKey)
+        
+        loadAllBooks()
+    }
+
+    func loadAllBooks() {
+        let savedFolder = UserDefaults.standard.string(forKey: "com.focusreader.books.libraryFolder")
+        let customPaths = UserDefaults.standard.stringArray(forKey: "com.focusreader.books.customEPUBs") ?? []
+        
+        print("🔍 FocusReader: loadAllBooks starting. savedFolder: \(String(describing: savedFolder)), customPaths: \(customPaths)")
         self.isLoading = true
         
         Task.detached(priority: .userInitiated) { [weak self] in
             guard let self else { return }
-            let files = self.findEPUBFiles(in: path, maxDepth: 2)
             var scanned: [LocalBook] = []
             
-            for file in files {
+            // 1. Scan folder if saved
+            if let folder = savedFolder {
+                let files = self.findEPUBFiles(in: folder, maxDepth: 2)
+                print("📁 FocusReader: Found \(files.count) EPUB files in library folder: \(folder)")
+                for file in files {
+                    print("📖 FocusReader: Checking folder file: \(file)")
+                    guard FileManager.default.fileExists(atPath: file) else {
+                        print("⚠️ FocusReader: Folder file does not exist: \(file)")
+                        continue
+                    }
+                    
+                    let progressKey = "com.focusreader.books.progress:\(file)"
+                    let progressVal = UserDefaults.standard.double(forKey: progressKey)
+                    
+                    let chapters = EPUBParser.parseChapters(at: file)
+                    if chapters.isEmpty {
+                        print("⚠️ FocusReader: Skipping folder file because parsed chapters are empty: \(file)")
+                        continue
+                    }
+                    
+                    let metadata = EPUBParser.parseMetadata(at: file)
+                    let title = metadata.title ?? URL(fileURLWithPath: file).deletingPathExtension().lastPathComponent
+                        .replacingOccurrences(of: "_", with: " ")
+                        .replacingOccurrences(of: "-", with: " ")
+                    let author = metadata.author ?? "Local Library Book"
+                    
+                    let dateKey = "com.focusreader.books.lastReadDate:\(file)"
+                    let rawDate = UserDefaults.standard.double(forKey: dateKey)
+                    let lastRead = rawDate > 0 ? Date(timeIntervalSinceReferenceDate: rawDate) : Date(timeIntervalSince1970: 0)
+                    
+                    print("✅ FocusReader: Adding folder book to library: \(title) by \(author)")
+                    scanned.append(LocalBook(
+                        title: title,
+                        author: author,
+                        epubPath: file,
+                        readingProgress: progressVal,
+                        lastReadDate: lastRead
+                    ))
+                }
+            }
+            
+            // 2. Scan custom files
+            for file in customPaths {
+                print("📖 FocusReader: Checking custom imported path: \(file)")
+                guard !scanned.contains(where: { $0.epubPath == file }) else {
+                    print("ℹ️ FocusReader: Custom book already in list: \(file)")
+                    continue
+                }
+                guard FileManager.default.fileExists(atPath: file) else {
+                    print("⚠️ FocusReader: Custom file does not exist: \(file)")
+                    continue
+                }
+                
                 let progressKey = "com.focusreader.books.progress:\(file)"
                 let progressVal = UserDefaults.standard.double(forKey: progressKey)
                 
                 let chapters = EPUBParser.parseChapters(at: file)
-                guard !chapters.isEmpty else { continue } // Ensure it's a valid parsed EPUB
+                if chapters.isEmpty {
+                    print("⚠️ FocusReader: Skipping custom book because parsed chapters are empty: \(file)")
+                    continue
+                }
                 
-                let title = URL(fileURLWithPath: file).deletingPathExtension().lastPathComponent
+                let metadata = EPUBParser.parseMetadata(at: file)
+                let title = metadata.title ?? URL(fileURLWithPath: file).deletingPathExtension().lastPathComponent
                     .replacingOccurrences(of: "_", with: " ")
                     .replacingOccurrences(of: "-", with: " ")
+                let author = metadata.author ?? "Imported Book"
                 
+                let dateKey = "com.focusreader.books.lastReadDate:\(file)"
+                let rawDate = UserDefaults.standard.double(forKey: dateKey)
+                let lastRead = rawDate > 0 ? Date(timeIntervalSinceReferenceDate: rawDate) : Date(timeIntervalSince1970: 0)
+                
+                print("✅ FocusReader: Adding custom book to library: \(title) by \(author)")
                 scanned.append(LocalBook(
                     title: title,
-                    author: "Local Library Book",
+                    author: author,
                     epubPath: file,
                     readingProgress: progressVal,
-                    lastReadDate: Date()
+                    lastReadDate: lastRead
                 ))
             }
             
             let sortedBooks = scanned.sorted(by: { $0.lastReadDate > $1.lastReadDate })
+            print("📚 FocusReader: loadAllBooks finished. Total library size: \(sortedBooks.count)")
             
             await MainActor.run {
                 self.localLibrary = sortedBooks
@@ -369,6 +469,10 @@ final class RSVPEngine: ObservableObject {
         let progressKey = "com.focusreader.books.progress:\(path)"
         UserDefaults.standard.set(progressVal, forKey: progressKey)
         
+        let dateVal = Date().timeIntervalSinceReferenceDate
+        let dateKey = "com.focusreader.books.lastReadDate:\(path)"
+        UserDefaults.standard.set(dateVal, forKey: dateKey)
+        
         if let idx = localLibrary.firstIndex(where: { $0.epubPath == path }) {
             var book = localLibrary[idx]
             book.readingProgress = progressVal
@@ -378,7 +482,6 @@ final class RSVPEngine: ObservableObject {
     }
     
     func loadLocalBook(_ book: LocalBook) {
-        self.selectedLocalBookPath = book.epubPath
         self.isLoading = true
         self.isLibraryMode = false
         
@@ -392,11 +495,50 @@ final class RSVPEngine: ObservableObject {
             let (words, startIdx, _) = EPUBParser.wordsFrom(epubPath: path, progress: progressVal)
             
             await MainActor.run {
-                self.load(words: words, startAt: startIdx, title: title, author: author)
+                self.load(words: words, startAt: startIdx, title: title, author: author, epubPath: path)
                 self.isLoading = false
                 self.play()
             }
         }
+    }
+
+    func resetProgress(for book: LocalBook) {
+        let progressKey = "com.focusreader.books.progress:\(book.epubPath)"
+        UserDefaults.standard.removeObject(forKey: progressKey)
+        
+        let dateKey = "com.focusreader.books.lastReadDate:\(book.epubPath)"
+        UserDefaults.standard.removeObject(forKey: dateKey)
+        
+        if selectedLocalBookPath == book.epubPath {
+            currentIndex = 0
+            persistLocalProgress()
+        }
+        
+        loadAllBooks()
+    }
+    
+    func deleteBook(_ book: LocalBook) {
+        var customPaths = UserDefaults.standard.stringArray(forKey: "com.focusreader.books.customEPUBs") ?? []
+        if let idx = customPaths.firstIndex(of: book.epubPath) {
+            customPaths.remove(at: idx)
+            UserDefaults.standard.set(customPaths, forKey: "com.focusreader.books.customEPUBs")
+        }
+        
+        let progressKey = "com.focusreader.books.progress:\(book.epubPath)"
+        UserDefaults.standard.removeObject(forKey: progressKey)
+        let dateKey = "com.focusreader.books.lastReadDate:\(book.epubPath)"
+        UserDefaults.standard.removeObject(forKey: dateKey)
+        
+        if selectedLocalBookPath == book.epubPath {
+            selectedLocalBookPath = nil
+            words = []
+            currentIndex = 0
+            bookTitle = "Open Books → press ⌥⌘R"
+            bookAuthor = ""
+            isPlaying = false
+        }
+        
+        loadAllBooks()
     }
 
     // ── Haptic Feedback Integration ──

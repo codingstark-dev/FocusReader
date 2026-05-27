@@ -57,7 +57,7 @@ final class AttachedToolbar: NSObject {
         isVisible = false
         stopPolling()
         panel?.orderOut(nil)
-        rsvpPanel?.hide()
+        rsvpPanel?.hide(activateBooks: false)
     }
 
     // MARK: - Build Panel
@@ -69,7 +69,7 @@ final class AttachedToolbar: NSObject {
             onFocusRead: { [weak self] in self?.startFocusRead() },
             onClose:      { [weak self] in self?.hide() }
         )
-        let hostingView = NSHostingView(rootView: toolbar)
+        let hostingView = FocusReaderHostingView(rootView: toolbar)
 
         let p = FocusReaderPanel(
             contentRect: NSRect(x: 0, y: 0, width: 680, height: toolbarHeight),
@@ -147,7 +147,7 @@ final class AttachedToolbar: NSObject {
                 
                 self.stopPolling()
                 self.panel?.orderOut(nil)
-                self.rsvpPanel?.hide()
+                self.rsvpPanel?.hide(activateBooks: false)
             }
         }
         
@@ -194,7 +194,7 @@ final class AttachedToolbar: NSObject {
         guard let booksWin = BooksWindowTracker.readingWindow() else {
             if panel?.isVisible == true { panel?.orderOut(nil) }
             if !engine.isPlaying && !(rsvpPanel?.isPanelVisible ?? false) {
-                rsvpPanel?.hide()
+                rsvpPanel?.hide(activateBooks: false)
             }
             return
         }
@@ -264,7 +264,7 @@ final class AttachedToolbar: NSObject {
             rsvpPanel = RSVPOverlayPanel(engine: engine, onClose: { [weak self] in
                 self?.engine.pause()
                 self?.engine.zenMode = false
-                self?.rsvpPanel?.hide()
+                self?.rsvpPanel?.hide(activateBooks: true)
             })
         }
 
@@ -289,7 +289,7 @@ final class AttachedToolbar: NSObject {
         if rsvpPanel == nil {
             rsvpPanel = RSVPOverlayPanel(engine: engine, onClose: { [weak self] in
                 self?.engine.pause()
-                self?.rsvpPanel?.hide()
+                self?.rsvpPanel?.hide(activateBooks: true)
             })
         }
         rsvpPanel?.show(over: nil)
@@ -405,6 +405,9 @@ final class RSVPOverlayPanel: NSObject, NSWindowDelegate {
                 if let visualEffect = panel.contentView as? NSVisualEffectView {
                     visualEffect.layer?.cornerRadius = 0
                 }
+                if let themeFrame = panel.contentView?.superview {
+                    themeFrame.layer?.cornerRadius = 0
+                }
                 panel.isMovable = false
                 panel.isMovableByWindowBackground = false
                 panel.setFrame(screen.frame, display: true, animate: true)
@@ -412,11 +415,19 @@ final class RSVPOverlayPanel: NSObject, NSWindowDelegate {
             }
         } else {
             if let visualEffect = panel.contentView as? NSVisualEffectView {
+                visualEffect.wantsLayer = true
                 visualEffect.layer?.cornerRadius = 24
+                visualEffect.layer?.masksToBounds = true
+            }
+            if let themeFrame = panel.contentView?.superview {
+                themeFrame.wantsLayer = true
+                themeFrame.layer?.cornerRadius = 24
+                themeFrame.layer?.masksToBounds = true
             }
             panel.isMovable = true
             panel.isMovableByWindowBackground = true
             panel.level = .floating
+            panel.invalidateShadow()
             
             // Restore the non-zen frame
             if let restoreFrame = nonZenFrame {
@@ -449,36 +460,53 @@ final class RSVPOverlayPanel: NSObject, NSWindowDelegate {
                 if let visualEffect = panel?.contentView as? NSVisualEffectView {
                     visualEffect.layer?.cornerRadius = 0
                 }
+                if let themeFrame = panel?.contentView?.superview {
+                    themeFrame.layer?.cornerRadius = 0
+                }
                 panel?.isMovable = false
                 panel?.isMovableByWindowBackground = false
                 panel?.setFrame(screen.frame, display: true)
                 panel?.level = .screenSaver
             }
-        } else if let frame = booksFrame {
-            let w: CGFloat = min(740, frame.width - 60)
-            let h: CGFloat = 400
-            
-            let origin = NSPoint(x: frame.midX - w/2, y: frame.midY - h/2)
-            panel?.setFrame(NSRect(origin: origin, size: NSSize(width: w, height: h)), display: true)
         } else {
-            // Center on main screen
-            if let screen = NSScreen.main {
-                let w: CGFloat = 740
+            if let visualEffect = panel?.contentView as? NSVisualEffectView {
+                visualEffect.wantsLayer = true
+                visualEffect.layer?.cornerRadius = 24
+                visualEffect.layer?.masksToBounds = true
+            }
+            if let themeFrame = panel?.contentView?.superview {
+                themeFrame.wantsLayer = true
+                themeFrame.layer?.cornerRadius = 24
+                themeFrame.layer?.masksToBounds = true
+            }
+            
+            if let frame = booksFrame {
+                let w: CGFloat = min(740, frame.width - 60)
                 let h: CGFloat = 400
-                let x = (screen.visibleFrame.width - w) / 2 + screen.visibleFrame.minX
-                let y = (screen.visibleFrame.height - h) / 2 + screen.visibleFrame.minY
-                panel?.setFrame(NSRect(x: x, y: y, width: w, height: h), display: true)
+                
+                let origin = NSPoint(x: frame.midX - w/2, y: frame.midY - h/2)
+                panel?.setFrame(NSRect(origin: origin, size: NSSize(width: w, height: h)), display: true)
+            } else {
+                // Center on main screen
+                if let screen = NSScreen.main {
+                    let w: CGFloat = 740
+                    let h: CGFloat = 400
+                    let x = (screen.visibleFrame.width - w) / 2 + screen.visibleFrame.minX
+                    let y = (screen.visibleFrame.height - h) / 2 + screen.visibleFrame.minY
+                    panel?.setFrame(NSRect(x: x, y: y, width: w, height: h), display: true)
+                }
             }
         }
         panel?.makeKeyAndOrderFront(nil)
         panel?.orderFrontRegardless()
+        panel?.invalidateShadow()
         NSApp.activate(ignoringOtherApps: true)
         panel?.makeFirstResponder(panel)
     }
 
-    func hide() {
+    func hide(activateBooks: Bool = false) {
         panel?.orderOut(nil)
-        if let booksApp = NSWorkspace.shared.runningApplications.first(where: { $0.bundleIdentifier == "com.apple.iBooksX" }) {
+        if activateBooks, let booksApp = NSWorkspace.shared.runningApplications.first(where: { $0.bundleIdentifier == "com.apple.iBooksX" }) {
             booksApp.activate(options: [.activateIgnoringOtherApps])
         }
     }
@@ -518,7 +546,7 @@ final class RSVPOverlayPanel: NSObject, NSWindowDelegate {
 
     private func buildPanel() {
         let view = RSVPOverlayView(engine: engine, onClose: onClose)
-        let hostingView = NSHostingView(rootView: view)
+        let hostingView = FocusReaderHostingView(rootView: view)
         
         let p = FocusReaderPanel(
             contentRect: NSRect(x: 0, y: 0, width: 740, height: 400),
@@ -531,15 +559,22 @@ final class RSVPOverlayPanel: NSObject, NSWindowDelegate {
         visualEffect.blendingMode = .behindWindow
         visualEffect.material = .hudWindow
         visualEffect.state = .active
-        visualEffect.wantsLayer = true
-        visualEffect.layer?.cornerRadius = 24 // Subtly curved overlays
-        visualEffect.layer?.masksToBounds = true
-        
         hostingView.frame = visualEffect.bounds
         hostingView.autoresizingMask = [.width, .height]
         visualEffect.addSubview(hostingView)
         
         p.contentView = visualEffect
+        
+        // Configure layer *after* setting contentView
+        visualEffect.wantsLayer = true
+        visualEffect.layer?.cornerRadius = 24 // Subtly curved overlays
+        visualEffect.layer?.masksToBounds = true
+        
+        if let themeFrame = p.contentView?.superview {
+            themeFrame.wantsLayer = true
+            themeFrame.layer?.cornerRadius = 24
+            themeFrame.layer?.masksToBounds = true
+        }
         p.isOpaque       = false
         p.backgroundColor = .clear
         p.hasShadow      = true
@@ -588,5 +623,14 @@ final class FocusReaderPanel: NSPanel {
                 NSApp.activate(ignoringOtherApps: true)
             }
         }
+    }
+}
+
+// MARK: - FocusReaderHostingView
+/// A custom NSHostingView subclass that overrides acceptsFirstMouse to allow click-through,
+/// so buttons and sliders respond immediately to the first click even if the window is in the background.
+final class FocusReaderHostingView<Content: View>: NSHostingView<Content> {
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
+        return true
     }
 }

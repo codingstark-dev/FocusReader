@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import UniformTypeIdentifiers
 
 // MARK: - Toolbar View
 /// Capsule floating pill that attaches seamlessly near the bottom center of the Books reading window.
@@ -434,39 +435,29 @@ struct RSVPOverlayView: View {
 
     // MARK: - Progress Scrubber
     private func progressBar(theme: GlassTheme) -> some View {
-        GeometryReader { geo in
-            ZStack(alignment: .leading) {
-                // Background Track
-                Capsule().fill(Color.white.opacity(0.08)).frame(height: 6)
-                
-                // Active Track Gradient
-                Capsule()
-                    .fill(LinearGradient(colors: [theme.accentColor, theme.accentColor.opacity(0.6)],
-                                         startPoint: .leading, endPoint: .trailing))
-                    .frame(width: geo.size.width * engine.progress, height: 6)
-                
-                // Sleek Drag Knob
-                Circle()
-                    .fill(.white)
-                    .frame(width: 14, height: 14)
-                    .shadow(color: theme.accentColor.opacity(0.4), radius: 3)
-                    .offset(x: geo.size.width * engine.progress - 7)
+        let progressBinding = Binding<Double>(
+            get: { engine.progress },
+            set: { newValue in
+                engine.seekTo(newValue)
             }
-            .gesture(DragGesture(minimumDistance: 0).onChanged { v in
-                engine.seekTo(v.location.x / geo.size.width)
-            })
-        }
-        .frame(height: 14)
+        )
+        return Slider(value: progressBinding, in: 0.0...1.0)
+            .accentColor(theme.accentColor)
     }
 
     // MARK: - Controls Dashboard
     private func controlsDashboard(theme: GlassTheme) -> some View {
         HStack(spacing: 20) {
-            // Numeric Reading Index Progress
-            Text("\(engine.currentIndex + 1) / \(engine.wordCount)")
-                .font(.system(size: 11, design: .monospaced))
-                .foregroundColor(.white.opacity(0.35))
-                .frame(width: 90, alignment: .leading)
+            // Numeric Reading Index & Estimated Page Progress
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Page \(engine.currentPage) of \(engine.totalPages)")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundColor(.white.opacity(0.85))
+                Text("\(engine.currentIndex + 1) / \(engine.wordCount) words")
+                    .font(.system(size: 9, design: .monospaced))
+                    .foregroundColor(.white.opacity(0.35))
+            }
+            .frame(width: 120, alignment: .leading)
             
             Spacer()
             
@@ -668,37 +659,8 @@ struct WPMSlider: View {
     let accentColor: Color
     
     var body: some View {
-        GeometryReader { geo in
-            ZStack(alignment: .leading) {
-                // Background Track
-                Capsule()
-                    .fill(Color.white.opacity(0.12))
-                    .frame(height: 4)
-                
-                // Active highlight track
-                Capsule()
-                    .fill(accentColor)
-                    .frame(width: geo.size.width * CGFloat((value - range.lowerBound) / (range.upperBound - range.lowerBound)), height: 4)
-                
-                // Thumb
-                Circle()
-                    .fill(Color.white)
-                    .frame(width: 12, height: 12)
-                    .shadow(color: accentColor.opacity(0.3), radius: 2)
-                    .offset(x: geo.size.width * CGFloat((value - range.lowerBound) / (range.upperBound - range.lowerBound)) - 6)
-            }
-            .gesture(
-                DragGesture(minimumDistance: 0).onChanged { drag in
-                    let fraction = drag.location.x / geo.size.width
-                    let newValue = range.lowerBound + min(max(fraction, 0.0), 1.0) * (range.upperBound - range.lowerBound)
-                    let steppedValue = (newValue / 25.0).rounded() * 25.0 // Snap to 25 WPM steps
-                    if steppedValue != value {
-                        value = min(max(steppedValue, range.lowerBound), range.upperBound)
-                    }
-                }
-            )
-        }
-        .frame(height: 12)
+        Slider(value: $value, in: range, step: 25)
+            .accentColor(accentColor)
     }
 }
 
@@ -1229,20 +1191,34 @@ struct LocalLibraryView: View {
             )
         }
         .buttonStyle(.plain)
+        .contextMenu {
+            Button(action: {
+                engine.resetProgress(for: book)
+            }) {
+                Label("Reset Progress", systemImage: "arrow.counterclockwise")
+            }
+            
+            Button(action: {
+                engine.deleteBook(book)
+            }) {
+                Label("Remove Book", systemImage: "trash")
+            }
+        }
     }
     
     private func selectLibraryFolder() {
         NSApp.activate(ignoringOtherApps: true)
         let panel = NSOpenPanel()
         panel.canChooseDirectories = true
-        panel.canChooseFiles = false
+        panel.canChooseFiles = true
         panel.allowsMultipleSelection = false
-        panel.prompt = "Choose Folder"
-        panel.message = "Select a folder containing EPUB books"
+        panel.prompt = "Choose"
+        panel.message = "Select an EPUB book or folder containing EPUBs"
         panel.level = .statusBar
+        panel.allowedContentTypes = [UTType(filenameExtension: "epub")].compactMap { $0 }
         
         if panel.runModal() == .OK, let url = panel.url {
-            engine.scanFolder(at: url.path)
+            engine.scanPath(at: url.path)
         }
     }
 }
